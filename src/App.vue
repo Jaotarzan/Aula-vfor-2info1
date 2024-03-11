@@ -1,5 +1,5 @@
 <script setup>
-import { ref, reactive, onMounted } from 'vue'
+import { ref, computed } from 'vue'
 
 const cidades = ref([
     'São Paulo',
@@ -14,6 +14,10 @@ const cidades = ref([
     'Brasília'
 ])
 
+const CidadesOrdenadas = computed (() => {
+  return cidades.value.sort()
+})
+
 const cidadeNova = ref('')
 
 function adicionarCidade() {
@@ -23,13 +27,14 @@ function adicionarCidade() {
   } 
 }
 
+
 </script>
 
 <template>
  <div class="cidades">
   <h1>lista de cidades</h1>
   <ul>
-    <li v-for="(cidade, key) in cidades.sort()" :key="key">{{ cidade }}</li>
+    <li v-for="(cidade, key) in CidadesOrdenadas" :key="key">{{ cidade }}</li>
   </ul>
   <label>Informe se deseja adicionar cidades:</label>
   <div>
