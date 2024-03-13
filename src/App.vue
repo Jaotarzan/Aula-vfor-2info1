@@ -14,11 +14,10 @@ const cidades = ref([
   'Brasília'
 ])
 
-const CidadesOrdenadas = computed(() => {
-  return cidades.value.sort()
-})
-
+const edicao = ref(-1)
 const cidadeNova = ref('')
+const cidadeAlterada = ref('')
+const cidadeOriginal = ref('')
 
 function adicionarCidade() {
   if (cidadeNova.value != '') {
@@ -30,6 +29,21 @@ function adicionarCidade() {
 function excluirCidade(i) {
   cidades.value.splice(cidades.value.indexOf(i), 1)
 }
+
+function editarCidade(i) {
+  cidadeOriginal.value = i
+  cidadeAlterada.value = cidades.value[cidades.value.indexOf(i)]
+  edicao.value = cidades.value.indexOf(i)
+}
+
+function confirmarEdicao() {
+  cidades.value.splice(cidades.value.indexOf(cidadeOriginal.value), 1, cidadeAlterada.value)
+  edicao.value = -1
+}
+
+const CidadesOrdenadas = computed(() => {
+  return cidades.value.sort()
+})
 </script>
 
 <template>
@@ -37,8 +51,15 @@ function excluirCidade(i) {
     <h1>lista de cidades</h1>
     <ul>
       <li v-for="(cidade, key) in CidadesOrdenadas" :key="key">
-       <p> {{ cidade }} </p>
+        <p v-if="edicao != cidades.indexOf(cidade)">{{ cidade }}</p>
+        <div v-else>
+          <input type="text" v-model="cidadeAlterada" />
+        </div>
         <button @click="excluirCidade(cidade)">excluir</button>
+        <button @click="editarCidade(cidade)" v-if="edicao != cidades.indexOf(cidade)">
+          editar
+        </button>
+        <button @click="confirmarEdicao" v-else>confirmar</button>
       </li>
     </ul>
     <label>Informe se deseja adicionar cidades:</label>
